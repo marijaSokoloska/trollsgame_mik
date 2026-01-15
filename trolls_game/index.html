@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="mk">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>ChatGuard Prototype</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="app">
+    <header class="topbar">
+      <div class="top-left">
+        <button id="btnBack" class="icon-btn" title="Back" aria-label="Back">←</button>
+        <img class="avatar" id="trollAvatar" src="assets/troll.png" alt="Troll avatar" />
+        <div class="title">
+          <div class="name">@trolly123</div>
+          <div class="subtitle" id="levelInfo">Ниво 1 · 1/10</div>
+        </div>
+      </div>
+
+      <div class="top-right">
+        <div class="pill" id="scoreInfo">Точно: 0 · Грешки: 0</div>
+      </div>
+    </header>
+
+    <main class="chat" id="chat"></main>
+
+    <footer class="actionbar">
+      <div class="input-row">
+        <input id="replyInput" class="reply-input" type="text" autocomplete="off"
+               placeholder="Одговор (предлог ќе се појави тука)..." />
+      </div>
+
+      <div class="actions">
+        <button id="btnSend" class="btn btn-like">📨 SEND</button>
+        <button id="btnReport" class="btn btn-report">🚩 REPORT</button>
+      </div>
+    </footer>
+  </div>
+
+  <!-- Report Modal -->
+  <div class="overlay hidden" id="reportOverlay" role="dialog" aria-modal="true">
+    <div class="modal">
+      <div class="modal-header">
+        <div class="modal-title">Пријави ја пораката</div>
+        <button class="icon-btn" id="btnCloseReport" aria-label="Close">✕</button>
+      </div>
+
+      <div class="modal-subtitle">Зошто ја пријавуваш оваа порака?</div>
+
+      <div class="reason-list" id="reasonList"></div>
+
+      <div class="modal-footer">
+        <button class="btn btn-ghost" id="btnCancelReport">Откажи</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Marko Popup -->
+  <div class="overlay hidden" id="markoOverlay" role="dialog" aria-modal="true">
+    <div class="popup">
+      <div class="popup-top">
+        <img class="avatar mentor" id="markoAvatar" src="assets/mentor.png" alt="Marko avatar" />
+        <div>
+          <div class="popup-title">Марко</div>
+          <div class="popup-text subtle">Совет / реакција</div>
+        </div>
+      </div>
+      <div class="popup-text" id="markoText"></div>
+      <button class="btn btn-like" id="btnMarkoOk">Во ред</button>
+    </div>
+  </div>
+
+  <!-- Code Quiz Popup -->
+  <div class="overlay hidden" id="codeOverlay" role="dialog" aria-modal="true">
+    <div class="popup">
+      <div class="popup-title">Кој беше делот од кодот?</div>
+      <div class="popup-text subtle" id="codeHint">Тролот прати emoji — избери точна опција.</div>
+
+      <div class="option-list" id="codeOptions"></div>
+
+      <button class="btn btn-like" id="btnCodeConfirm" disabled>Потврди</button>
+    </div>
+  </div>
+
+  <!-- End Popup (Next / Restart) -->
+  <div class="overlay hidden" id="endOverlay" role="dialog" aria-modal="true">
+    <div class="popup">
+      <div class="popup-title" id="endTitle">Ниво завршено</div>
+      <div class="popup-text" id="endText"></div>
+
+      <div class="popup-buttons">
+        <button class="btn btn-ghost" id="btnEndSecondary">Пробај пак</button>
+        <button class="btn btn-like" id="btnEndPrimary">Следно ниво</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="data.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
