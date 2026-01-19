@@ -68,7 +68,7 @@ window.GAME_DATA = {
         },
         {
           text: "Види ја оваа слика 😂",
-          image: "assets/news1.jpg", // смени кога ќе ставиш
+          image: "assets/meme.jpeg", // смени кога ќе ставиш
           suggestedReply: "Хаха, смешна е 😄",
           correctAction: "send",
           correctReason: null,
