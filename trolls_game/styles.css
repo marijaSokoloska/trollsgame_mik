@@ -1,340 +1,305 @@
-:root{
-  --bg:#0e1320;
-  --panel:#151c2e;
-  --panel2:#101626;
-  --text:#e8ecff;
-  --muted:#a8b0d6;
-  --bubble:#1c2440;
-  --bubble2:#222c4d;
-  --me:#2a9df4;
-  --like:#2ecc71;
-  --report:#e74c3c;
-  --shadow: 0 18px 50px rgba(0,0,0,.45);
-  --radius: 16px;
+:root {
+  --bg: #0e1320;
+  --panel: #151c2e;     /* Позадина на модалите */
+  --text: #e8ecff;      /* Боја на текст */
+  --muted: #a8b0d6;     /* Сив текст */
+  --bubble-troll: #222c4d;
+  --bubble-me: #2a9df4; /* Сина боја за мои пораки */
+  --green: #2ecc71;     /* Зелено копче */
+  --red: #e74c3c;       /* Црвено копче */
+  --shadow: 0 10px 40px rgba(0,0,0,0.5);
 }
 
-*{ box-sizing:border-box; }
-body{
-  margin:0;
-  background: radial-gradient(1200px 800px at 50% 0%, #1a2450 0%, var(--bg) 55%);
-  font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-  color:var(--text);
-}
+* { box-sizing: border-box; }
 
-.app{
-  width:min(420px, 100vw);
-  height:100vh;
-  margin:0 auto;
-  display:flex;
-  flex-direction:column;
-  background: linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,.01));
-  border-left:1px solid rgba(255,255,255,.06);
-  border-right:1px solid rgba(255,255,255,.06);
-}
-
-.topbar{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  padding:12px 12px;
-  background: rgba(0,0,0,.18);
-  backdrop-filter: blur(10px);
-  border-bottom:1px solid rgba(255,255,255,.07);
-}
-
-.top-left{
-  display:flex;
-  align-items:center;
-  gap:10px;
-}
-
-.avatar{
-  width:36px;
-  height:36px;
-  border-radius:50%;
-  border:2px solid rgba(255,255,255,.12);
-  object-fit:cover;
-}
-
-.avatar.mentor{
-  width:42px;
-  height:42px;
-}
-
-.title .name{
-  font-weight:700;
-  letter-spacing:.2px;
-}
-.title .subtitle{
-  font-size:12px;
-  color:var(--muted);
-  margin-top:2px;
-}
-
-.pill{
-  font-size:12px;
-  color:var(--muted);
-  background: rgba(255,255,255,.06);
-  border:1px solid rgba(255,255,255,.08);
-  padding:8px 10px;
-  border-radius:999px;
-}
-
-.chat{
-  flex:1;
-  overflow:auto;
-  padding:14px 12px 10px;
-  display:flex;
-  flex-direction:column;
-  gap:10px;
-}
-
-.msg{
-  display:flex;
-  gap:10px;
-  align-items:flex-end;
-}
-
-.bubble{
-  max-width:82%;
-  background: var(--bubble);
-  border:1px solid rgba(255,255,255,.08);
-  border-radius: 16px 16px 16px 6px;
-  padding:10px 12px;
-  box-shadow: 0 10px 25px rgba(0,0,0,.25);
-}
-
-.bubble img.inline-img{
-  width:100%;
-  border-radius:12px;
-  margin-top:10px;
-  border:1px solid rgba(255,255,255,.10);
-}
-
-.msg.troll .avatar{ display:block; }
-.msg.troll .bubble{ background: var(--bubble2); }
-
-.msg.me{
-  justify-content:flex-end;
-}
-.msg.me .bubble{
-  background: rgba(42, 157, 244, .18);
-  border:1px solid rgba(42,157,244,.25);
-  border-radius: 16px 16px 6px 16px;
-}
-
-.msg.system{
-  justify-content:center;
-}
-.msg.system .bubble{
-  max-width:95%;
-  text-align:center;
-  border-radius: 14px;
-  background: rgba(255,255,255,.06);
-}
-
-.typing-dots{
-  display:inline-flex;
-  gap:6px;
-  align-items:center;
-  padding:2px 0;
-}
-.typing-dots span{
-  width:6px;
-  height:6px;
-  border-radius:50%;
-  background: rgba(232,236,255,.65);
-  display:inline-block;
-  animation: bounce 1.2s infinite ease-in-out;
-}
-.typing-dots span:nth-child(2){ animation-delay: .15s; }
-.typing-dots span:nth-child(3){ animation-delay: .30s; }
-@keyframes bounce{
-  0%, 80%, 100%{ transform: translateY(0); opacity:.6; }
-  40%{ transform: translateY(-5px); opacity:1; }
-}
-
-.actionbar{
-  padding:10px 12px 14px;
-  border-top:1px solid rgba(255,255,255,.07);
-  background: rgba(0,0,0,.18);
-  backdrop-filter: blur(10px);
-  display:flex;
-  flex-direction:column;
-  gap:10px;
-}
-
-.input-row{
-  display:flex;
-}
-
-.reply-input{
-  width:100%;
-  height:42px;
-  border-radius: 999px;
-  padding:0 14px;
-  background: rgba(255,255,255,.06);
-  border:1px solid rgba(255,255,255,.10);
+body {
+  margin: 0;
+  background: radial-gradient(circle at 50% 0%, #1a2450 0%, var(--bg) 60%);
+  font-family: system-ui, -apple-system, sans-serif;
   color: var(--text);
-  outline:none;
-}
-.reply-input::placeholder{
-  color: rgba(232,236,255,.55);
+  height: 100vh;
+  overflow: hidden; /* Спречува скролање на целата позадина */
 }
 
-.actions{
-  display:flex;
-  gap:10px;
+/* --- ГЛАВНА РАМКА НА АПЛИКАЦИЈАТА --- */
+.app {
+  width: min(420px, 100vw);
+  height: 100vh;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  background: rgba(255, 255, 255, 0.02);
+  border-left: 1px solid rgba(255, 255, 255, 0.05);
+  border-right: 1px solid rgba(255, 255, 255, 0.05);
+  position: relative;
 }
 
-.btn{
-  flex:1;
-  height:44px;
-  border-radius: 12px;
-  border:0;
-  font-weight:800;
-  letter-spacing:.2px;
-  cursor:pointer;
-  box-shadow: var(--shadow);
+/* --- ОВЕРЛЕИ (Попапи) - ЦЕНТРИРАЊЕ --- */
+.overlay {
+  position: fixed;
+  inset: 0; /* Го покрива цел екран */
+  background: rgba(0, 0, 0, 0.85); /* Темна позадина */
+  display: flex;
+  align-items: center;    /* Вертикално Центар */
+  justify-content: center; /* Хоризонтално Центар */
+  z-index: 100;
+  padding: 20px;
+  backdrop-filter: blur(5px);
 }
 
-.btn-like{ background: var(--like); color:#06210f; }
-.btn-report{ background: var(--report); color:#2a0705; }
-.btn-ghost{
-  background: rgba(255,255,255,.08);
-  color: var(--text);
-  border:1px solid rgba(255,255,255,.10);
-  box-shadow:none;
+.hidden {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
 }
-
-.btn:disabled{
-  opacity:.55;
-  cursor:not-allowed;
-}
-
-.icon-btn{
-  border:0;
-  background: rgba(255,255,255,.06);
-  color: var(--text);
-  width:34px;
-  height:34px;
-  border-radius: 10px;
-  cursor:pointer;
-  border:1px solid rgba(255,255,255,.08);
-}
-
-.overlay{
-  position:fixed;
-  inset:0;
-  background: rgba(0,0,0,.55);
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  padding:14px;
-}
-
-.hidden{ display:none; }
-
-.modal{
-  width:min(420px, 92vw);
+/* Изглед на прозорчето (Popup Box) */
+.modal, .popup {
+  width: 100%;
+  max-width: 360px;
   background: var(--panel);
-  border:1px solid rgba(255,255,255,.10);
-  border-radius: var(--radius);
+  border-radius: 24px;
+  padding: 25px;
   box-shadow: var(--shadow);
-  padding:14px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
 }
 
-.modal-header{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  margin-bottom:10px;
-}
-.modal-title{ font-weight:900; }
-.modal-subtitle{ color:var(--muted); font-size:13px; margin-bottom:12px; }
-
-.reason-list{
-  display:flex;
-  flex-direction:column;
-  gap:10px;
+/* Слики и Наслови во Попап */
+.popup-top {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
 }
 
-.reason{
-  width:100%;
-  text-align:left;
-  background: rgba(255,255,255,.06);
-  border:1px solid rgba(255,255,255,.10);
-  border-radius: 12px;
-  padding:12px 12px;
-  cursor:pointer;
+.popup-title {
+  font-size: 24px;
+  font-weight: 900;
+  color: white;
+}
+
+.avatar.mentor {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  border: 3px solid var(--green);
+  object-fit: cover;
+}
+
+/* --- КОПЧИЊА (ГЛАВЕН СТИЛ) --- */
+.btn {
+  border: none;
+  border-radius: 16px;
+  font-weight: 800;
+  font-size: 18px;
+  cursor: pointer;
+  transition: all 0.1s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  position: relative;
+  /* 3D ЕФЕКТ */
+  box-shadow: 0 5px 0 rgba(0,0,0,0.3); 
+  transform: translateY(0);
+}
+
+.btn:active {
+  box-shadow: 0 2px 0 rgba(0,0,0,0.3); /* Се намалува сенката при клик */
+  transform: translateY(3px); /* Копчето оди надолу */
+}
+
+/* Бои на копчињата */
+.btn-like {
+  background: var(--green);
+  color: #0d3e22;
+}
+
+.btn-report {
+  background: var(--red);
+  color: white;
+}
+
+.btn-ghost {
+  background: rgba(255, 255, 255, 0.08);
   color: var(--text);
-  font-weight:700;
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-.modal-footer{
-  margin-top:12px;
-  display:flex;
-  justify-content:flex-end;
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  box-shadow: none;
+  transform: translateY(3px); /* Изгледа како веќе притиснато/заглавено */
 }
 
-.popup{
-  width:min(420px, 92vw);
-  background: var(--panel2);
-  border:1px solid rgba(255,255,255,.10);
-  border-radius: var(--radius);
-  box-shadow: var(--shadow);
-  padding:16px;
-  display:flex;
-  flex-direction:column;
-  gap:12px;
-  align-items:stretch;
+/* --- СПЕЦИЈАЛНИ ГОЛЕМИНИ ЗА КОПЧИЊА --- */
+
+/* 1. Копчиња во МЕНИТО (Intro, Levels) - ГОЛЕМИ */
+#introOverlay .btn, 
+.level-list .btn {
+  height: 65px; /* Високи и дебели */
+  font-size: 20px;
+  margin-bottom: 5px; /* Место за сенката */
 }
 
-.popup-top{
-  display:flex;
-  align-items:center;
-  gap:12px;
-}
-.popup-title{
-  font-weight:900;
-  font-size:18px;
-}
-.popup-text{
-  color: var(--text);
-  line-height:1.35;
-}
-.popup-text.subtle{
-  color: var(--muted);
-  font-size:13px;
+/* 2. Копче за Таен Код - ЦЕНТРИРАНО */
+#btnSecretMenu {
+  height: 55px;
+  width: 90%; /* Малку потесно од другите */
+  margin: 10px auto 0 auto; /* Центрирање */
 }
 
-.option-list{
-  display:flex;
-  flex-direction:column;
-  gap:10px;
+/* 3. Копчиња во ИГРАТА (Send/Report) - ПОМАЛИ */
+/* Ова е клучно за да не се распадне четот! */
+.actionbar .btn {
+  height: 50px;
+  font-size: 16px;
+  box-shadow: 0 4px 0 rgba(0,0,0,0.3); /* Малку помала сенка */
 }
 
-.option{
-  background: rgba(255,255,255,.06);
-  border:1px solid rgba(255,255,255,.10);
+/* --- ИЗГЛЕД НА ЧЕТОТ --- */
+.topbar {
+  padding: 10px 15px;
+  background: rgba(0, 0, 0, 0.2);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+.top-left { display: flex; align-items: center; gap: 10px; }
+.avatar { width: 38px; height: 38px; border-radius: 50%; }
+
+.chat {
+  flex: 1; /* Зафаќа слободен простор */
+  overflow-y: auto; /* Скролање */
+  padding: 15px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.msg { display: flex; gap: 10px; align-items: flex-end; }
+.bubble {
+  max-width: 80%;
+  padding: 12px 16px;
+  border-radius: 18px;
+  font-size: 15px;
+  line-height: 1.4;
+}
+
+/* Трол пораки */
+.msg.troll .bubble { 
+  background: var(--bubble-troll); 
+  border-bottom-left-radius: 4px;
+}
+
+/* Мои пораки */
+.msg.me { justify-content: flex-end; }
+.msg.me .bubble { 
+  background: rgba(42, 157, 244, 0.2); 
+  border: 1px solid var(--bubble-me);
+  color: white;
+  border-bottom-right-radius: 4px;
+}
+
+/* Системски пораки */
+.msg.system { justify-content: center; opacity: 0.8; font-size: 13px; }
+
+/* Долен дел (Внес на текст) */
+.actionbar {
+  padding: 15px;
+  background: #101626;
+  border-top: 1px solid rgba(255,255,255,0.08);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.reply-input {
+  width: 100%;
+  height: 45px;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 99px;
+  padding: 0 15px;
+  color: white;
+  outline: none;
+}
+
+.actions {
+  display: flex;
+  gap: 10px;
+}
+
+/* Листа на нивоа */
+.level-list {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  margin-top: 10px;
+}
+
+/* Причини за пријавување */
+.reason-list { display: flex; flex-direction: column; gap: 10px; }
+.reason {
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.1);
+  padding: 12px;
   border-radius: 12px;
-  padding:12px;
-  cursor:pointer;
-  font-weight:900;
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
+  color: white;
+  text-align: left;
+  cursor: pointer;
+}
+.overlay.hidden {
+  display: none !important;
 }
 
-.option.selected{
-  outline: 2px solid rgba(46, 204, 113, .9);
+.icon-btn {
+  background: rgba(255, 255, 255, 0.08); /* Ghost стил */
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: white;
+  width: 40px;
+  height: 40px;
+  border-radius: 12px; /* Малку заоблено како и другите копчиња */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  padding: 0;
 }
 
-.popup-buttons{
-  display:flex;
-  gap:10px;
+.icon-btn:hover {
+  background: rgba(255, 255, 255, 0.15);
+  transform: translateX(-3px); /* Мала анимација на лево кога ќе поминеш со глушец */
 }
-.popup-buttons .btn{
-  flex:1;
-  height:44px;
+
+.icon-btn:active {
+  transform: scale(0.9); /* Се собира малку кога ќе го кликнеш */
+}
+
+.icon-btn svg {
+  width: 20px;
+  height: 20px;
+  opacity: 0.8;
+}
+.topbar {
+  padding: 12px 15px;
+  background: rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(10px);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.top-left {
+  display: flex;
+  align-items: center;
+  gap: 12px; /* Малку повеќе простор помеѓу копчето и аватарот */
 }
