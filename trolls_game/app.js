@@ -34,7 +34,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const secretCombo = ["📱", "⚠️", "🛡️"];
     let playerSelection = [null, null, null];
     let secretWrongAttempts = 0;
-    const emojiPool = ["📱", "⚠️", "🛡️", "🕵️", "🔐", "🚫", "💬", "📡", "🔥", "🛑"];
+    const emojiPool = ["📱", "⚠️", "🛡️", "🕵️", "🔐", "🚫", "💬", "📡", "🔥", "🛑","💻","🖱️"];
 
     // Помошни функции за тековно ниво
     const level = () => DATA.levels[levelIndex];
@@ -334,3 +334,4 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     };
 });
+
