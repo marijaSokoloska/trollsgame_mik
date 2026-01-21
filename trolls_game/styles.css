@@ -1,27 +1,32 @@
+/* 1. Вчитување на заоблен фонт */
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;900&display=swap');
+
 :root {
   --bg: #0e1320;
-  --panel: #151c2e;     /* Позадина на модалите */
-  --text: #e8ecff;      /* Боја на текст */
-  --muted: #a8b0d6;     /* Сив текст */
+  --panel: #151c2e;      /* Позадина на модалите */
+  --text: #e8ecff;       /* Боја на текст */
+  --muted: #a8b0d6;      /* Сив текст */
   --bubble-troll: #222c4d;
-  --bubble-me: #2a9df4; /* Сина боја за мои пораки */
-  --green: #2ecc71;     /* Зелено копче */
-  --red: #e74c3c;       /* Црвено копче */
+  --bubble-me: #2a9df4;  /* Сина боја за мои пораки */
+  --green: #2ecc71;      /* Зелено копче */
+  --red: #e74c3c;        /* Црвено копче */
   --shadow: 0 10px 40px rgba(0,0,0,0.5);
 }
 
-* { box-sizing: border-box; }
+* { 
+  box-sizing: border-box; 
+  font-family: 'Nunito', sans-serif; /* Примена на мекиот фонт насекаде */
+}
 
 body {
   margin: 0;
   background: radial-gradient(circle at 50% 0%, #1a2450 0%, var(--bg) 60%);
-  font-family: system-ui, -apple-system, sans-serif;
   color: var(--text);
   height: 100vh;
-  overflow: hidden; /* Спречува скролање на целата позадина */
+  overflow: hidden;
 }
 
-/* --- ГЛАВНА РАМКА НА АПЛИКАЦИЈАТА --- */
+/* --- ГЛАВНА РАМКА --- */
 .app {
   width: min(420px, 100vw);
   height: 100vh;
@@ -34,17 +39,18 @@ body {
   position: relative;
 }
 
-/* --- ОВЕРЛЕИ (Попапи) - ЦЕНТРИРАЊЕ --- */
+/* --- ОВЕРЛЕИ (Попапи) --- */
 .overlay {
   position: fixed;
-  inset: 0; /* Го покрива цел екран */
-  background: rgba(0, 0, 0, 0.85); /* Темна позадина */
+  inset: 0;
+  background: rgba(0, 0, 0, 0.85);
   display: flex;
-  align-items: center;    /* Вертикално Центар */
-  justify-content: center; /* Хоризонтално Центар */
+  align-items: center;
+  justify-content: center;
   z-index: 100;
   padding: 20px;
   backdrop-filter: blur(5px);
+  transition: opacity 0.3s ease;
 }
 
 .hidden {
@@ -53,7 +59,7 @@ body {
   opacity: 0 !important;
   pointer-events: none !important;
 }
-/* Изглед на прозорчето (Popup Box) */
+
 .modal, .popup {
   width: 100%;
   max-width: 360px;
@@ -68,7 +74,6 @@ body {
   gap: 15px;
 }
 
-/* Слики и Наслови во Попап */
 .popup-top {
   display: flex;
   flex-direction: column;
@@ -90,40 +95,31 @@ body {
   object-fit: cover;
 }
 
-/* --- КОПЧИЊА (ГЛАВЕН СТИЛ) --- */
+/* --- КОПЧИЊА --- */
 .btn {
   border: none;
-  border-radius: 16px;
+  border-radius: 20px; /* Позаоблени ќошеви */
   font-weight: 800;
   font-size: 18px;
   cursor: pointer;
-  transition: all 0.1s;
+  transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   display: flex;
   align-items: center;
   justify-content: center;
   width: 100%;
+  height: 55px;
   position: relative;
-  /* 3D ЕФЕКТ */
   box-shadow: 0 5px 0 rgba(0,0,0,0.3); 
   transform: translateY(0);
 }
 
 .btn:active {
-  box-shadow: 0 2px 0 rgba(0,0,0,0.3); /* Се намалува сенката при клик */
-  transform: translateY(3px); /* Копчето оди надолу */
+  box-shadow: 0 2px 0 rgba(0,0,0,0.3);
+  transform: translateY(3px);
 }
 
-/* Бои на копчињата */
-.btn-like {
-  background: var(--green);
-  color: #0d3e22;
-}
-
-.btn-report {
-  background: var(--red);
-  color: white;
-}
-
+.btn-like { background: var(--green); color: #0d3e22; }
+.btn-report { background: var(--red); color: white; }
 .btn-ghost {
   background: rgba(255, 255, 255, 0.08);
   color: var(--text);
@@ -134,53 +130,57 @@ body {
   opacity: 0.5;
   cursor: not-allowed;
   box-shadow: none;
-  transform: translateY(3px); /* Изгледа како веќе притиснато/заглавено */
+  transform: translateY(3px);
+  filter: grayscale(1);
 }
 
-/* --- СПЕЦИЈАЛНИ ГОЛЕМИНИ ЗА КОПЧИЊА --- */
-
-/* 1. Копчиња во МЕНИТО (Intro, Levels) - ГОЛЕМИ */
-#introOverlay .btn, 
-.level-list .btn {
-  height: 65px; /* Високи и дебели */
-  font-size: 20px;
-  margin-bottom: 5px; /* Место за сенката */
+/* Копче за Таен Код - со пулсирачка анимација */
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.03); box-shadow: 0 0 15px rgba(255, 255, 255, 0.2); }
+    100% { transform: scale(1); }
 }
+/* Оваа анимација се додава преку JS, но може да биде и тука */
 
-/* 2. Копче за Таен Код - ЦЕНТРИРАНО */
-#btnSecretMenu {
-  height: 55px;
-  width: 90%; /* Малку потесно од другите */
-  margin: 10px auto 0 auto; /* Центрирање */
-}
-
-/* 3. Копчиња во ИГРАТА (Send/Report) - ПОМАЛИ */
-/* Ова е клучно за да не се распадне четот! */
-.actionbar .btn {
-  height: 50px;
-  font-size: 16px;
-  box-shadow: 0 4px 0 rgba(0,0,0,0.3); /* Малку помала сенка */
-}
-
-/* --- ИЗГЛЕД НА ЧЕТОТ --- */
+/* --- TOP BAR & NAVIGATION --- */
 .topbar {
-  padding: 10px 15px;
-  background: rgba(0, 0, 0, 0.2);
+  padding: 12px 15px;
+  background: rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(10px);
   display: flex;
   justify-content: space-between;
   align-items: center;
-  border-bottom: 1px solid rgba(255,255,255,0.08);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
 }
-.top-left { display: flex; align-items: center; gap: 10px; }
-.avatar { width: 38px; height: 38px; border-radius: 50%; }
 
+.top-left { display: flex; align-items: center; gap: 12px; }
+.avatar { width: 38px; height: 38px; border-radius: 50%; object-fit: cover; }
+
+.icon-btn {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: white;
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.icon-btn:hover { background: rgba(255, 255, 255, 0.15); transform: translateX(-2px); }
+
+/* --- CHAT AREA --- */
 .chat {
-  flex: 1; /* Зафаќа слободен простор */
-  overflow-y: auto; /* Скролање */
+  flex: 1;
+  overflow-y: auto;
   padding: 15px;
   display: flex;
   flex-direction: column;
   gap: 15px;
+  scroll-behavior: smooth;
 }
 
 .msg { display: flex; gap: 10px; align-items: flex-end; }
@@ -192,13 +192,11 @@ body {
   line-height: 1.4;
 }
 
-/* Трол пораки */
 .msg.troll .bubble { 
   background: var(--bubble-troll); 
   border-bottom-left-radius: 4px;
 }
 
-/* Мои пораки */
 .msg.me { justify-content: flex-end; }
 .msg.me .bubble { 
   background: rgba(42, 157, 244, 0.2); 
@@ -207,10 +205,9 @@ body {
   border-bottom-right-radius: 4px;
 }
 
-/* Системски пораки */
 .msg.system { justify-content: center; opacity: 0.8; font-size: 13px; }
 
-/* Долен дел (Внес на текст) */
+/* --- ACTION BAR --- */
 .actionbar {
   padding: 15px;
   background: #101626;
@@ -222,84 +219,121 @@ body {
 
 .reply-input {
   width: 100%;
-  height: 45px;
+  height: 50px;
   background: rgba(255,255,255,0.05);
   border: 1px solid rgba(255,255,255,0.1);
-  border-radius: 99px;
-  padding: 0 15px;
+  border-radius: 25px;
+  padding: 0 20px;
   color: white;
   outline: none;
+  font-size: 16px;
+  font-weight: 600;
 }
 
-.actions {
-  display: flex;
-  gap: 10px;
-}
+.actions { display: flex; gap: 10px; }
+.actions .btn { height: 50px; font-size: 16px; }
 
-/* Листа на нивоа */
-.level-list {
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
-  margin-top: 10px;
-}
-
-/* Причини за пријавување */
+/* --- LEVEL LIST & REASONS --- */
+.level-list { display: flex; flex-direction: column; gap: 12px; margin-top: 10px; }
 .reason-list { display: flex; flex-direction: column; gap: 10px; }
 .reason {
   background: rgba(255,255,255,0.05);
   border: 1px solid rgba(255,255,255,0.1);
-  padding: 12px;
-  border-radius: 12px;
+  padding: 14px;
+  border-radius: 15px;
   color: white;
   text-align: left;
   cursor: pointer;
+  font-weight: 600;
+  transition: background 0.2s;
 }
-.overlay.hidden {
-  display: none !important;
+.reason:hover { background: rgba(255,255,255,0.1); }
+
+/* --- 🔓 ТАЕН СЕФ (Styles for Vault) --- */
+
+.emoji-slots {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin: 20px 0;
 }
 
-.icon-btn {
-  background: rgba(255, 255, 255, 0.08); /* Ghost стил */
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  color: white;
-  width: 40px;
-  height: 40px;
-  border-radius: 12px; /* Малку заоблено како и другите копчиња */
+.slot {
+  width: 70px;
+  height: 70px;
+  background: rgba(0, 0, 0, 0.3);
+  border: 2px dashed var(--muted);
+  border-radius: 18px;
   display: flex;
   align-items: center;
   justify-content: center;
+  font-size: 35px;
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   cursor: pointer;
-  transition: all 0.2s;
-  padding: 0;
 }
 
-.icon-btn:hover {
+/* Кога слот е пополнет, границата станува полна линија */
+.slot:not(:empty) {
+  border-style: solid;
+  border-color: var(--bubble-me);
+  background: rgba(42, 157, 244, 0.1);
+}
+
+.slot:hover { border-color: white; }
+
+/* Анимација кога емоџи влегува во слот */
+@keyframes popIn {
+  0% { transform: scale(0.5); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+.slot-pop {
+  animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+/* Банка на емоџија */
+.emoji-bank {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  background: rgba(255, 255, 255, 0.03);
+  padding: 15px;
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.draggable-emoji {
+  width: 100%;
+  aspect-ratio: 1;
+  background: var(--panel);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  user-select: none;
+}
+
+.draggable-emoji:hover {
   background: rgba(255, 255, 255, 0.15);
-  transform: translateX(-3px); /* Мала анимација на лево кога ќе поминеш со глушец */
+  transform: scale(1.1);
 }
 
-.icon-btn:active {
-  transform: scale(0.9); /* Се собира малку кога ќе го кликнеш */
+.draggable-emoji:active { transform: scale(0.95); }
+
+/* Класа што ја додаваме со JS кога емоџито е искористено */
+.draggable-emoji.used {
+  opacity: 0.2;
+  pointer-events: none;
+  filter: grayscale(100%);
+  transform: scale(0.8);
 }
 
-.icon-btn svg {
-  width: 20px;
-  height: 20px;
-  opacity: 0.8;
-}
-.topbar {
-  padding: 12px 15px;
-  background: rgba(0, 0, 0, 0.3);
-  backdrop-filter: blur(10px);
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-}
-
-.top-left {
-  display: flex;
-  align-items: center;
-  gap: 12px; /* Малку повеќе простор помеѓу копчето и аватарот */
+/* Victory Popup Decoration */
+#victoryOverlay .popup {
+  border: 2px solid var(--green);
+  background: linear-gradient(to bottom, #1a2450, var(--panel));
 }
