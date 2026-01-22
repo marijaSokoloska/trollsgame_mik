@@ -1,79 +1,80 @@
-/* 1. Вчитување на заоблен фонт */
+/* ================= FONT ================= */
 @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;900&display=swap');
 
+/* ================= VARIABLES ================= */
 :root {
   --bg: #0e1320;
-  --panel: #151c2e;      /* Позадина на модалите */
-  --text: #e8ecff;       /* Боја на текст */
-  --muted: #a8b0d6;      /* Сив текст */
+  --panel: #151c2e;
+  --text: #e8ecff;
+  --muted: #a8b0d6;
   --bubble-troll: #222c4d;
-  --bubble-me: #2a9df4;  /* Сина боја за мои пораки */
-  --green: #2ecc71;      /* Зелено копче */
-  --red: #e74c3c;        /* Црвено копче */
+  --bubble-me: #2a9df4;
+  --green: #2ecc71;
+  --red: #e74c3c;
   --shadow: 0 10px 40px rgba(0,0,0,0.5);
 }
 
-* { 
-  box-sizing: border-box; 
-  font-family: 'Nunito', sans-serif; /* Примена на мекиот фонт насекаде */
+/* ================= RESET ================= */
+* {
+  box-sizing: border-box;
+  font-family: 'Nunito', sans-serif;
 }
 
 body {
   margin: 0;
-  background: radial-gradient(circle at 50% 0%, #1a2450 0%, var(--bg) 60%);
-  color: var(--text);
   height: 100vh;
   overflow: hidden;
+  background: radial-gradient(circle at 50% 0%, #1a2450 0%, var(--bg) 60%);
+  color: var(--text);
 }
 
-/* --- ГЛАВНА РАМКА --- */
+/* ================= APP ================= */
 .app {
   width: min(420px, 100vw);
   height: 100vh;
   margin: 0 auto;
   display: flex;
   flex-direction: column;
-  background: rgba(255, 255, 255, 0.02);
-  border-left: 1px solid rgba(255, 255, 255, 0.05);
-  border-right: 1px solid rgba(255, 255, 255, 0.05);
-  position: relative;
+  background: rgba(255,255,255,0.02);
+  border-left: 1px solid rgba(255,255,255,0.05);
+  border-right: 1px solid rgba(255,255,255,0.05);
 }
 
-/* --- ОВЕРЛЕИ (Попапи) --- */
+/* ================= OVERLAYS ================= */
 .overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.85);
+  background: rgba(0,0,0,0.85);
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 100;
   padding: 20px;
   backdrop-filter: blur(5px);
-  transition: opacity 0.3s ease;
 }
 
 .hidden {
   display: none !important;
-  visibility: hidden !important;
   opacity: 0 !important;
   pointer-events: none !important;
 }
 
-.modal, .popup {
+.modal,
+.popup {
   width: 100%;
   max-width: 360px;
   background: var(--panel);
   border-radius: 24px;
   padding: 25px;
   box-shadow: var(--shadow);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255,255,255,0.1);
   text-align: center;
   display: flex;
   flex-direction: column;
   gap: 15px;
 }
 
+/* ================= POPUP ================= */
 .popup-top {
   display: flex;
   flex-direction: column;
@@ -87,43 +88,47 @@ body {
   color: white;
 }
 
-.avatar.mentor {
-  width: 64px;
-  height: 64px;
+.avatar {
+  width: 38px;
+  height: 38px;
   border-radius: 50%;
-  border: 3px solid var(--green);
   object-fit: cover;
 }
 
-/* --- КОПЧИЊА --- */
+.avatar.mentor {
+  width: 64px;
+  height: 64px;
+  border: 3px solid var(--green);
+}
+
+/* ================= BUTTONS ================= */
 .btn {
+  width: 100%;
+  height: 55px;
   border: none;
-  border-radius: 20px; /* Позаоблени ќошеви */
-  font-weight: 800;
+  border-radius: 20px;
   font-size: 18px;
+  font-weight: 800;
   cursor: pointer;
-  transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 100%;
-  height: 55px;
-  position: relative;
-  box-shadow: 0 5px 0 rgba(0,0,0,0.3); 
-  transform: translateY(0);
+  transition: all 0.2s cubic-bezier(.175,.885,.32,1.275);
+  box-shadow: 0 5px 0 rgba(0,0,0,0.3);
 }
 
 .btn:active {
-  box-shadow: 0 2px 0 rgba(0,0,0,0.3);
   transform: translateY(3px);
+  box-shadow: 0 2px 0 rgba(0,0,0,0.3);
 }
 
 .btn-like { background: var(--green); color: #0d3e22; }
 .btn-report { background: var(--red); color: white; }
+
 .btn-ghost {
-  background: rgba(255, 255, 255, 0.08);
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.1);
   color: var(--text);
-  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .btn:disabled {
@@ -131,59 +136,54 @@ body {
   cursor: not-allowed;
   box-shadow: none;
   transform: translateY(3px);
-  filter: grayscale(1);
 }
 
-/* Копче за Таен Код - со пулсирачка анимација */
-@keyframes pulse {
-    0% { transform: scale(1); }
-    50% { transform: scale(1.03); box-shadow: 0 0 15px rgba(255, 255, 255, 0.2); }
-    100% { transform: scale(1); }
-}
-/* Оваа анимација се додава преку JS, но може да биде и тука */
-
-/* --- TOP BAR & NAVIGATION --- */
+/* ================= TOP BAR ================= */
 .topbar {
   padding: 12px 15px;
-  background: rgba(0, 0, 0, 0.3);
+  background: rgba(0,0,0,0.3);
   backdrop-filter: blur(10px);
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  border-bottom: 1px solid rgba(255,255,255,0.05);
 }
 
-.top-left { display: flex; align-items: center; gap: 12px; }
-.avatar { width: 38px; height: 38px; border-radius: 50%; object-fit: cover; }
+.top-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
 
 .icon-btn {
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  color: white;
   width: 40px;
   height: 40px;
   border-radius: 12px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.1);
+  color: white;
   cursor: pointer;
-  transition: all 0.2s;
 }
 
-.icon-btn:hover { background: rgba(255, 255, 255, 0.15); transform: translateX(-2px); }
+.icon-btn:hover {
+  background: rgba(255,255,255,0.15);
+  transform: translateX(-2px);
+}
 
-/* --- CHAT AREA --- */
+/* ================= CHAT ================= */
 .chat {
   flex: 1;
-  overflow-y: auto;
   padding: 15px;
+  overflow-y: auto;
   display: flex;
   flex-direction: column;
   gap: 15px;
-  scroll-behavior: smooth;
 }
 
-.msg { display: flex; gap: 10px; align-items: flex-end; }
+.msg {
+  display: flex;
+  gap: 10px;
+}
+
 .bubble {
   max-width: 80%;
   padding: 12px 16px;
@@ -192,22 +192,22 @@ body {
   line-height: 1.4;
 }
 
-.msg.troll .bubble { 
-  background: var(--bubble-troll); 
+.msg.troll .bubble {
+  background: var(--bubble-troll);
   border-bottom-left-radius: 4px;
 }
 
-.msg.me { justify-content: flex-end; }
-.msg.me .bubble { 
-  background: rgba(42, 157, 244, 0.2); 
+.msg.me {
+  justify-content: flex-end;
+}
+
+.msg.me .bubble {
+  background: rgba(42,157,244,0.2);
   border: 1px solid var(--bubble-me);
-  color: white;
   border-bottom-right-radius: 4px;
 }
 
-.msg.system { justify-content: center; opacity: 0.8; font-size: 13px; }
-
-/* --- ACTION BAR --- */
+/* ================= ACTION BAR ================= */
 .actionbar {
   padding: 15px;
   background: #101626;
@@ -218,39 +218,32 @@ body {
 }
 
 .reply-input {
-  width: 100%;
   height: 50px;
-  background: rgba(255,255,255,0.05);
-  border: 1px solid rgba(255,255,255,0.1);
   border-radius: 25px;
   padding: 0 20px;
-  color: white;
-  outline: none;
-  font-size: 16px;
-  font-weight: 600;
-}
-
-.actions { display: flex; gap: 10px; }
-.actions .btn { height: 50px; font-size: 16px; }
-
-/* --- LEVEL LIST & REASONS --- */
-.level-list { display: flex; flex-direction: column; gap: 12px; margin-top: 10px; }
-.reason-list { display: flex; flex-direction: column; gap: 10px; }
-.reason {
   background: rgba(255,255,255,0.05);
   border: 1px solid rgba(255,255,255,0.1);
+  color: white;
+  font-size: 16px;
+}
+
+/* ================= LISTS ================= */
+.level-list,
+.reason-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.reason {
   padding: 14px;
   border-radius: 15px;
-  color: white;
-  text-align: left;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.1);
   cursor: pointer;
-  font-weight: 600;
-  transition: background 0.2s;
 }
-.reason:hover { background: rgba(255,255,255,0.1); }
 
-/* --- 🔓 ТАЕН СЕФ (Styles for Vault) --- */
-
+/* ================= VAULT ================= */
 .emoji-slots {
   display: flex;
   justify-content: center;
@@ -261,78 +254,78 @@ body {
 .slot {
   width: 70px;
   height: 70px;
-  background: rgba(0, 0, 0, 0.3);
-  border: 2px dashed var(--muted);
   border-radius: 18px;
+  border: 2px dashed var(--muted);
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 35px;
-  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   cursor: pointer;
 }
 
-/* Кога слот е пополнет, границата станува полна линија */
 .slot:not(:empty) {
   border-style: solid;
   border-color: var(--bubble-me);
-  background: rgba(42, 157, 244, 0.1);
+  background: rgba(42,157,244,0.1);
 }
 
-.slot:hover { border-color: white; }
+.slot.error {
+  border-color: var(--red);
+  background: rgba(231,76,60,0.15);
+}
 
-/* Анимација кога емоџи влегува во слот */
+.slot.returning {
+  animation: popIn 0.2s ease;
+}
+
+.emoji-bank {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  padding: 15px;
+}
+
+.draggable-emoji {
+  aspect-ratio: 1;
+  border-radius: 14px;
+  background: var(--panel);
+  border: 1px solid rgba(255,255,255,0.1);
+  font-size: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.draggable-emoji.used {
+  opacity: 0.2;
+  pointer-events: none;
+}
+
+/* ================= FEEDBACK ================= */
+.error {
+  color: var(--red);
+  font-weight: 900;
+}
+
+/* ================= ANIMATIONS ================= */
+@keyframes shake {
+  0%,100% { transform: translateX(0); }
+  25% { transform: translateX(-8px); }
+  50% { transform: translateX(8px); }
+  75% { transform: translateX(-8px); }
+}
+
+.shake {
+  animation: shake 0.4s ease-in-out;
+}
+
 @keyframes popIn {
   0% { transform: scale(0.5); opacity: 0; }
   100% { transform: scale(1); opacity: 1; }
 }
 
-.slot-pop {
-  animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-}
-
-/* Банка на емоџија */
-.emoji-bank {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 10px;
-  background: rgba(255, 255, 255, 0.03);
-  padding: 15px;
-  border-radius: 20px;
-  border: 1px solid rgba(255, 255, 255, 0.05);
-}
-
-.draggable-emoji {
-  width: 100%;
-  aspect-ratio: 1;
-  background: var(--panel);
-  border: 1px solid rgba(255,255,255,0.1);
-  border-radius: 14px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 28px;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  user-select: none;
-}
-
-.draggable-emoji:hover {
-  background: rgba(255, 255, 255, 0.15);
-  transform: scale(1.1);
-}
-
-.draggable-emoji:active { transform: scale(0.95); }
-
-/* Класа што ја додаваме со JS кога емоџито е искористено */
-.draggable-emoji.used {
-  opacity: 0.2;
-  pointer-events: none;
-  filter: grayscale(100%);
-  transform: scale(0.8);
-}
-
-/* Victory Popup Decoration */
+/* ================= VICTORY ================= */
 #victoryOverlay .popup {
   border: 2px solid var(--green);
   background: linear-gradient(to bottom, #1a2450, var(--panel));
