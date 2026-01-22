@@ -4,151 +4,154 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>ChatGuard Prototype</title>
+
   <link rel="stylesheet" href="styles.css" />
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 </head>
 <body>
 
-  <div id="introOverlay" class="overlay">
-    <div class="popup">
-      <div class="popup-top">
-        <img src="assets/mentor.png" class="avatar mentor" alt="Марко">
-        <div class="popup-title">Еј, јас сум Марко!</div>
-      </div>
-      <div class="popup-text">
-        Ми пишуваат некои луѓе што не ги познавам добро... <br><br>
-        <b>Можеш ли да ми помогнеш да одлучам што да им одговорам?</b>
-      </div>
-      <button id="btnIntroOk" class="btn btn-like">Може, ајде!</button>
+<!-- INTRO -->
+<div id="introOverlay" class="overlay">
+  <div class="popup">
+    <div class="popup-top">
+      <img src="assets/mentor.png" class="avatar mentor" alt="Марко">
+      <div class="popup-title">Еј, јас сум Марко!</div>
     </div>
-  </div>
-
-  <div id="levelMenuOverlay" class="overlay hidden">
-    <div class="modal">
-      <div class="modal-header">
-        <div class="modal-title">Избери Ниво</div>
-      </div>
-      <p class="modal-subtitle">Помогни му на Марко да остане безбеден!</p>
-      
-      <div class="level-list">
-        <button class="btn btn-like" onclick="selectLevel(0)">Ниво 1 (Лесно)</button>
-        <button id="lvlBtn1" class="btn btn-ghost" onclick="selectLevel(1)" disabled>Ниво 2 (Средно) 🔒</button>
-        <button id="lvlBtn2" class="btn btn-ghost" onclick="selectLevel(2)" disabled>Ниво 3 (Тешко) 🔒</button>
-      </div>
-
-      <hr style="margin: 20px 0; border: 0; border-top: 1px solid rgba(255,255,255,0.1);">
-      
-      <div style="text-align: center;">
-        <button id="btnSecretMenu" class="btn btn-ghost" disabled>🔐 Внеси таен код</button>
-      </div>
-
-      <div style="margin-top: 30px; text-align: center;">
-        <button onclick="window.resetGame()" style="background:none; border:none; color:rgba(255,255,255,0.5); font-size:12px; cursor:pointer; text-decoration:underline;">
-            Избриши го прогресот и почни од почеток
-        </button>
-      </div>
+    <div class="popup-text">
+      Ми пишуваат луѓе што не ги познавам.<br><br>
+      <b>Можеш ли да ми помогнеш да одлучам што е безбедно?</b>
     </div>
+    <button id="btnIntroOk" class="btn btn-like">Ајде!</button>
   </div>
+</div>
 
-  <div class="app">
-    <header class="topbar">
-      <div class="top-left">
-        <button id="btnBack" class="icon-btn">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M19 12H5M12 19l-7-7 7-7"/>
-          </svg>
-        </button>
-        <img class="avatar" id="trollAvatar" src="assets/troll.jpg" />
-        <div class="title">
-          <div class="name">@непознат_профил</div>
-          <div class="subtitle" id="levelInfo">Ниво 1</div>
-        </div>
-      </div>
-      <div class="top-right">
-        <div class="pill" id="scoreInfo">Точно: 0</div>
-      </div>
-    </header>
+<!-- MENU -->
+<div id="levelMenuOverlay" class="overlay hidden">
+  <div class="modal">
+    <div class="modal-title">Избери разговор</div>
+    <p class="modal-subtitle">Секој разговор е со различен профил</p>
 
-    <main class="chat" id="chat"></main>
+    <div class="level-list">
+      <button id="lvlBtn0" class="btn btn-ghost">@трол_123 🔒</button>
+      <button id="lvlBtn1" class="btn btn-ghost">@анонимен_хејтер 🔒</button>
+      <button id="lvlBtn2" class="btn btn-ghost">@dark_chat 🔒</button>
+    </div>
 
-    <footer class="actionbar">
-      <div class="input-row">
-        <input id="replyInput" class="reply-input" type="text" placeholder="Чекање одговор..." readonly />
-      </div>
-      <div class="actions">
-        <button id="btnSend" class="btn btn-like">📨 ОДГОВОРИ</button>
-        <button id="btnReport" class="btn btn-report">🚩 ПРИЈАВИ</button>
-      </div>
-    </footer>
+    <hr class="divider">
+
+    <button id="btnSecretMenu" class="btn btn-ghost" disabled>
+      🔐 Отклучи го сефот
+    </button>
   </div>
+</div>
 
-  <div class="overlay hidden" id="reportOverlay">
-    <div class="modal">
-      <div class="modal-header">
-        <div class="modal-title">Зошто пријавуваш?</div>
-      </div>
-      <div class="reason-list" id="reasonList"></div>
-      <div class="modal-footer">
-        <button class="btn btn-ghost" id="btnCancelReport">Откажи</button>
+<!-- APP -->
+<div class="app">
+  <header class="topbar">
+    <div class="top-left">
+      <button id="btnBack" class="icon-btn">
+        ←
+      </button>
+
+      <img class="avatar" src="assets/troll.jpg" alt="Трол">
+
+      <div>
+        <div class="name">@непознат_профил</div>
+        <div id="levelInfo" class="subtitle">Разговор</div>
       </div>
     </div>
-  </div>
 
-  <div class="overlay hidden" id="markoOverlay">
-    <div class="popup">
-      <div class="popup-top">
-        <img class="avatar mentor" src="assets/mentor.png" />
-        <div class="popup-title">Марко вели:</div>
-      </div>
-      <div class="popup-text" id="markoText"></div>
-      <button class="btn btn-like" id="btnMarkoOk">Во ред</button>
+    <div id="scoreInfo" class="pill">
+      Точно: 0 | Грешки: 0
     </div>
-  </div>
+  </header>
 
-  <div class="overlay hidden" id="codeOverlay">
-    <div class="popup">
-      <div class="popup-title">Запомни го емоџито!</div>
-      <p>Кој беше тајниот клуч што ти го даде Марко?</p>
-      <div class="option-list" id="codeOptions" style="display: flex; justify-content: center; gap: 10px;"></div>
+  <main id="chat" class="chat"></main>
+
+  <footer class="actionbar">
+    <input id="replyInput" class="reply-input" type="text" />
+
+    <div class="actions">
+      <button id="btnSend" class="btn btn-like">📨 Одговори</button>
+      <button id="btnReport" class="btn btn-report">🚩 Пријави</button>
     </div>
+  </footer>
+</div>
+
+<!-- REPORT -->
+<div id="reportOverlay" class="overlay hidden">
+  <div class="modal">
+    <div class="modal-title">Зошто го пријавуваш?</div>
+    <div id="reasonList" class="reason-list"></div>
+    <button id="btnCancelReport" class="btn btn-ghost">Откажи</button>
   </div>
+</div>
 
-  <div id="secretCodeOverlay" class="overlay hidden">
-    <div class="modal">
-      <div class="modal-title">🔓 Отклучи го Сефот</div>
-      <p>Поредете ги емоџијата што ги добивте по секое ниво по точен редослед:</p>
-      
-      <div class="emoji-slots">
-        <div class="slot" data-index="0"></div>
-        <div class="slot" data-index="1"></div>
-        <div class="slot" data-index="2"></div>
-      </div>
-
-      <div class="emoji-bank" id="emojiBank"></div>
-      
-      <div id="secretErrorCounter" style="color: #ff4757; font-weight: bold; margin: 10px 0; font-size: 14px;">
-        Грешни обиди: 0
-      </div>
-
-      <div class="modal-footer" style="display: flex; gap: 10px; width: 100%;">
-        <button id="btnCheckSecret" class="btn btn-like">ПРОВЕРИ</button>
-        <button id="btnCancelSecret" class="btn btn-ghost">Откажи</button>
-      </div>
+<!-- MARKO -->
+<div id="markoOverlay" class="overlay hidden">
+  <div class="popup">
+    <div class="popup-top">
+      <img src="assets/mentor.png" class="avatar mentor">
+      <div class="popup-title">Марко</div>
     </div>
+    <div id="markoText" class="popup-text"></div>
+    <button id="btnMarkoOk" class="btn btn-like">Во ред</button>
   </div>
+</div>
 
-  <div id="victoryOverlay" class="overlay hidden">
-    <div class="popup">
-      <div style="font-size: 80px;">🏆</div>
-      <div class="popup-title">БРАВО ШАМПИОНЕ!</div>
-      <div class="popup-text">
-        Успешно го заштити Марко од сите онлајн закани и го отклучи неговиот сеф со тајни знаења. Сега си вистински експерт за интернет безбедност!
-      </div>
-      <button onclick="location.reload()" class="btn btn-like">ИГРАЈ ПОВТОРНО</button>
+<!-- CODE QUIZ -->
+<div id="codeOverlay" class="overlay hidden">
+  <div class="popup">
+    <div class="popup-title">🔑 Кој беше точниот клуч?</div>
+    <div id="codeOptions" class="level-list"></div>
+  </div>
+</div>
+
+<!-- SECRET VAULT -->
+<div id="secretCodeOverlay" class="overlay hidden">
+  <div class="modal">
+    <div class="modal-title">🔓 Таен сеф</div>
+
+    <div class="emoji-slots">
+      <div class="slot"></div>
+      <div class="slot"></div>
+      <div class="slot"></div>
     </div>
-  </div>
 
-  <script src="data.js"></script>
-  <script src="app.js"></script>
+    <div id="emojiBank" class="emoji-bank"></div>
+
+    <div id="secretErrorCounter" class="error-counter">
+      Грешни обиди: 0
+    </div>
+
+    <button id="btnCheckSecret" class="btn btn-like">Провери</button>
+    <button id="btnCancelSecret" class="btn btn-ghost">Откажи</button>
+  </div>
+</div>
+
+<!-- EXIT -->
+<div id="confirmExitOverlay" class="overlay hidden">
+  <div class="modal">
+    <div class="popup-title">Сигурно излегуваш?</div>
+    <p>Ќе го изгубиш тековниот разговор.</p>
+    <button id="btnConfirmExit" class="btn btn-report">Излези</button>
+    <button id="btnCancelExit" class="btn btn-ghost">Остани</button>
+  </div>
+</div>
+
+<!-- VICTORY -->
+<div id="victoryOverlay" class="overlay hidden">
+  <div class="popup">
+    <div style="font-size:70px;">🏆</div>
+    <div class="popup-title">Браво!</div>
+    <div class="popup-text">
+      Успешно го заштити Марко 🎉
+    </div>
+    <button class="btn btn-like" onclick="location.reload()">Играј повторно</button>
+  </div>
+</div>
+
+<script src="data.js"></script>
+<script src="app.js"></script>
 </body>
 </html>
