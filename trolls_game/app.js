@@ -1,5 +1,4 @@
 document.addEventListener("DOMContentLoaded", () => {
-    // --- ЕЛЕМЕНТИ ОД DOM ---
     const chatEl = document.getElementById("chat");
     const levelInfoEl = document.getElementById("levelInfo");
     const scoreInfoEl = document.getElementById("scoreInfo");
@@ -7,331 +6,300 @@ document.addEventListener("DOMContentLoaded", () => {
     const btnSend = document.getElementById("btnSend");
     const btnReport = document.getElementById("btnReport");
     const btnBack = document.getElementById("btnBack");
+    const trollNameEl = document.querySelector(".topbar .name");
 
-    // Оверлеи
-    const levelMenuOverlay = document.getElementById("levelMenuOverlay");
-    const reportOverlay = document.getElementById("reportOverlay");
-    const markoOverlay = document.getElementById("markoOverlay");
-    const codeOverlay = document.getElementById("codeOverlay");
-    const secretCodeOverlay = document.getElementById("secretCodeOverlay");
-    const victoryOverlay = document.getElementById("victoryOverlay");
+    const overlays = {
+        menu: document.getElementById("levelMenuOverlay"),
+        report: document.getElementById("reportOverlay"),
+        marko: document.getElementById("markoOverlay"),
+        code: document.getElementById("codeOverlay"),
+        secret: document.getElementById("secretCodeOverlay"),
+        victory: document.getElementById("victoryOverlay"),
+        exit: document.getElementById("confirmExitOverlay"),
+        intro: document.getElementById("introOverlay")
+    };
 
-    // --- СОСТОЈБА НА ИГРАТА ---
     const DATA = window.GAME_DATA;
+
     let levelIndex = 0;
     let turnIndex = 0;
     let correctCount = 0;
-    
-    // ВЧИТУВАЊЕ ПРОГРЕС: Проверуваме дали има зачувано прогрес
-    let unlockedLevels = JSON.parse(localStorage.getItem("chatGuardProgress")) || [0];
+    let wrongCount = 0;
 
-    // Функција за зачувување на прогресот
+    /* 🔒 САМО ЕДЕН БРОЈ – највисок отклучен левел */
+    let unlockedLevel = Number(localStorage.getItem("chatGuardProgress"));
+    if (isNaN(unlockedLevel)) unlockedLevel = 0;
+
     function saveProgress() {
-        localStorage.setItem("chatGuardProgress", JSON.stringify(unlockedLevels));
+        localStorage.setItem("chatGuardProgress", unlockedLevel);
     }
 
-    // Состојба за Тајниот Сеф (Vault)
     const secretCombo = ["📱", "⚠️", "🛡️"];
     let playerSelection = [null, null, null];
     let secretWrongAttempts = 0;
-    const emojiPool = ["📱", "⚠️", "🛡️", "🕵️", "🔐", "🚫", "💬", "📡", "🔥", "🛑","💻","🖱️"];
 
-    // Помошни функции за тековно ниво
+    const emojiPool = ["📱", "⚠️", "🛡️", "🕵️", "🔐", "🚫", "💬", "📡", "🔥", "🛑"];
+
     const level = () => DATA.levels[levelIndex];
     const turn = () => level().turns[turnIndex];
 
-    // Иницијализација на менито веднаш
-    updateMenuUI();
+    /* ---------- UI ---------- */
 
-    // --- ЛОГИКА ЗА ТАЈНИОТ СЕФ (НОВА ВЕРЗИЈА) ---
-    function openSecretVault() {
-        const bank = document.getElementById("emojiBank");
-        const slots = document.querySelectorAll('.slot');
-        bank.innerHTML = "";
-        playerSelection = [null, null, null];
-        
-        // 1. Исчисти ги слотовите и постави настан за враќање (Undo)
-        slots.forEach((slot, index) => {
-            slot.textContent = "";
-            slot.className = "slot"; // Ресетирај анимации
-            slot.style.borderColor = "rgba(255, 255, 255, 0.1)";
-            
-            slot.onclick = () => {
-                if (playerSelection[index]) {
-                    // Најди го емоџито во банката и врати го (овозможи го повторно)
-                    const emojiToReturn = playerSelection[index];
-                    const bankIcons = document.querySelectorAll('.draggable-emoji');
-                    
-                    for (let icon of bankIcons) {
-                        if (icon.textContent === emojiToReturn && icon.classList.contains("used")) {
-                            icon.classList.remove("used");
-                            break; // Врати само едно такво емоџи
-                        }
-                    }
-                    
-                    // Исчисти го слотот
-                    playerSelection[index] = null;
-                    slot.textContent = "";
-                    slot.classList.remove("slot-pop");
-                }
-            };
-        });
-        
-        // 2. Креирај ја банката со емоџија
-        const shuffledPool = [...emojiPool].sort(() => Math.random() - 0.5);
-        
-        shuffledPool.forEach(emoji => {
-            const el = document.createElement("div");
-            el.className = "draggable-emoji";
-            el.textContent = emoji;
-            
-            el.onclick = () => {
-                // Ако е веќе искористено, не прави ништо
-                if (el.classList.contains("used")) return;
-
-                const firstEmpty = playerSelection.indexOf(null);
-                if (firstEmpty !== -1) {
-                    // Стави во слот
-                    playerSelection[firstEmpty] = emoji;
-                    const slot = slots[firstEmpty];
-                    slot.textContent = emoji;
-                    slot.classList.add("slot-pop"); // Активирај анимација
-                    slot.style.borderColor = "var(--bubble-me)";
-                    
-                    // Обележи во банка дека е искористено (затемни го)
-                    el.classList.add("used");
-                }
-            };
-            bank.appendChild(el);
-        });
-        secretCodeOverlay.classList.remove("hidden");
+    function showMarkoMessage(text) {
+        document.getElementById("markoText").textContent = text;
+        overlays.marko.classList.remove("hidden");
     }
 
-    document.getElementById("btnCheckSecret").onclick = () => {
-        if (JSON.stringify(playerSelection) === JSON.stringify(secretCombo)) {
-            // ПОБЕДА!
-            secretCodeOverlay.classList.add("hidden");
-            victoryOverlay.classList.remove("hidden");
-            // Активирај конфети
-            if (typeof confetti === "function") {
-                confetti({
-                    particleCount: 150,
-                    spread: 70,
-                    origin: { y: 0.6 }
-                });
+    function updateMenuUI() {
+        DATA.levels.forEach((lvl, i) => {
+            const btn = document.getElementById(`lvlBtn${i}`);
+            if (!btn) return;
+
+            btn.textContent = `@${lvl.username}`;
+
+            if (i <= unlockedLevel) {
+                btn.disabled = false;
+                btn.classList.remove("btn-ghost");
+                btn.classList.add("btn-like");
+                btn.onclick = () => selectLevel(i);
+            } else {
+                btn.disabled = true;
+                btn.classList.remove("btn-like");
+                btn.classList.add("btn-ghost");
+                btn.textContent += " 🔒";
+                btn.onclick = null;
             }
+        });
+
+        const btnSecret = document.getElementById("btnSecretMenu");
+        if (unlockedLevel >= DATA.levels.length - 1) {
+            btnSecret.disabled = false;
+            btnSecret.classList.remove("btn-ghost");
+            btnSecret.classList.add("btn-report");
+            btnSecret.onclick = openSecretVault;
         } else {
-            // ГРЕШКА
-            secretWrongAttempts++;
-            document.getElementById("secretErrorCounter").textContent = `Грешни обиди: ${secretWrongAttempts}`;
-            
-            // Визуелен фидбек за грешка
-            document.querySelectorAll('.slot').forEach(s => {
-                s.style.borderColor = "#ff4757";
-                setTimeout(() => s.style.borderColor = "var(--bubble-me)", 500);
-            });
-            alert("Погрешен редослед! Пробај пак.");
+            btnSecret.disabled = true;
+            btnSecret.classList.remove("btn-report");
+            btnSecret.classList.add("btn-ghost");
+            btnSecret.onclick = null;
         }
-    };
+    }
 
-    document.getElementById("btnCancelSecret").onclick = () => {
-        secretCodeOverlay.classList.add("hidden");
-    };
+    /* ---------- GAME FLOW ---------- */
 
-    // --- ГЛАВНА ИГРАЧКА ЛОГИКА ---
-    window.selectLevel = (idx) => {
+    function selectLevel(idx) {
+        if (idx > unlockedLevel) return;
+
         levelIndex = idx;
-        levelMenuOverlay.classList.add("hidden");
-        startLevel();
-    };
-
-    function startLevel() {
-        chatEl.innerHTML = "";
         turnIndex = 0;
         correctCount = 0;
-        updateHeader();
-        renderTurn();
-    }
+        wrongCount = 0;
 
-    function updateHeader() {
-        levelInfoEl.textContent = `Ниво ${level().id} · ${turnIndex + 1}/${level().turns.length}`;
-        scoreInfoEl.textContent = `Точно: ${correctCount}`;
+        chatEl.innerHTML = "";
+        trollNameEl.textContent = `@${level().username}`;
+        overlays.menu.classList.add("hidden");
+
+        renderTurn();
     }
 
     function renderTurn() {
         const t = turn();
-        if (!t) return;
 
-        updateHeader();
+        levelInfoEl.textContent = `Порака ${turnIndex + 1}/${level().turns.length}`;
+        scoreInfoEl.textContent = `Точно: ${correctCount} | Грешки: ${wrongCount}`;
 
-        // Симулација на „пишување“
         replyInput.value = "Марко пишува...";
         btnSend.disabled = true;
         btnReport.disabled = true;
 
         setTimeout(() => {
-            const msgDiv = document.createElement("div");
-            msgDiv.className = "msg troll";
-            
-            let content = `<div class="bubble">${t.text}`;
-            if (t.image) {
-                content += `<br><img src="${t.image}" style="width:100%; border-radius:10px; margin-top:10px;">`;
-            }
-            content += `</div>`;
-            
-            msgDiv.innerHTML = content;
-            chatEl.appendChild(msgDiv);
-            
-            // Овозможи ги контролите
+            chatEl.innerHTML += `
+                <div class="msg troll">
+                    <div class="bubble">${t.text}</div>
+                </div>
+            `;
             replyInput.value = t.suggestedReply;
             btnSend.disabled = false;
             btnReport.disabled = false;
-            
             chatEl.scrollTop = chatEl.scrollHeight;
-        }, 800);
+        }, 600);
     }
 
     function handleAction(action, reasonId = null) {
         const t = turn();
-        const isCorrect = (action === t.correctAction) && (action === "send" || reasonId === t.correctReason);
 
-        // Прикажи ја акцијата во чет
-        if (action === "send") {
-            chatEl.innerHTML += `<div class="msg me"><div class="bubble">${replyInput.value}</div></div>`;
+        const isCorrect =
+            action === t.correctAction &&
+            (action !== "report" || reasonId === t.correctReason);
+
+        chatEl.innerHTML += action === "send"
+            ? `<div class="msg me"><div class="bubble">${replyInput.value}</div></div>`
+            : `<div class="msg system"><div class="bubble">🚩 Профилот е пријавен</div></div>`;
+
+        isCorrect ? correctCount++ : wrongCount++;
+        showMarkoMessage(isCorrect ? t.markoPraise : t.markoWrong);
+
+        turnIndex++;
+
+        if (turnIndex < level().turns.length) {
+            setTimeout(renderTurn, 900);
         } else {
-            chatEl.innerHTML += `<div class="msg system"><div class="bubble">🚩 Ти го пријави овој разговор.</div></div>`;
+            setTimeout(() => {
+                chatEl.innerHTML += `
+                    <div class="msg system">
+                        <div class="bubble">🔑 Клуч: ${level().code.emoji}</div>
+                    </div>
+                `;
+                showCodeQuiz();
+            }, 1000);
         }
-
-        if (isCorrect) {
-            correctCount++;
-        }
-
-        // Покажи фидбек од Марко
-        showMarko(isCorrect ? t.markoPraise : t.markoWrong);
-
-        // Провери дали има уште пораки
-        if (turnIndex < level().turns.length - 1) {
-            turnIndex++;
-            setTimeout(renderTurn, 1200);
-        } else {
-            // КРАЈ НА НИВО
-            setTimeout(finishLevel, 1500);
-        }
-    }
-
-    function finishLevel() {
-        chatEl.innerHTML += `<div class="msg system"><div class="bubble">🎁 Марко ти даде таен клуч: ${level().code.emoji}</div></div>`;
-        chatEl.scrollTop = chatEl.scrollHeight;
-        
-        setTimeout(() => {
-            showCodeQuiz();
-        }, 1500);
-    }
-
-    function showMarko(text) {
-        document.getElementById("markoText").textContent = text;
-        markoOverlay.classList.remove("hidden");
     }
 
     function showCodeQuiz() {
         const optionsEl = document.getElementById("codeOptions");
         optionsEl.innerHTML = "";
-        
+
         level().code.options.forEach(opt => {
             const btn = document.createElement("button");
             btn.className = "btn btn-ghost";
             btn.textContent = opt;
+
             btn.onclick = () => {
                 if (opt === level().code.correct) {
-                    // --- ЛОГИКА ЗА ОТКЛУЧУВАЊЕ ---
-                    let nextLvl = levelIndex + 1;
-                    
-                    // Ако постои следно ниво, додај го
-                    if (nextLvl < DATA.levels.length && !unlockedLevels.includes(nextLvl)) {
-                        unlockedLevels.push(nextLvl);
+                    if (levelIndex === unlockedLevel) {
+                        unlockedLevel++;
                         saveProgress();
                     }
-                    
-                    // Ако е завршено последното ниво (индекс 2), отклучи го сефот (индекс 3)
-                    if (levelIndex === 2 && !unlockedLevels.includes(3)) {
-                        unlockedLevels.push(3);
-                        saveProgress();
-                    }
-
+                    overlays.code.classList.add("hidden");
+                    overlays.menu.classList.remove("hidden");
                     updateMenuUI();
-                    codeOverlay.classList.add("hidden");
-                    levelMenuOverlay.classList.remove("hidden");
                 } else {
-                    alert("Мислам дека не беше тоа емоџито. Погледни ја последната порака во четот.");
+                    optionsEl.classList.add("shake");
+                    setTimeout(() => optionsEl.classList.remove("shake"), 400);
                 }
             };
+
             optionsEl.appendChild(btn);
         });
-        codeOverlay.classList.remove("hidden");
+
+        overlays.code.classList.remove("hidden");
     }
 
-    function updateMenuUI() {
-        unlockedLevels.forEach(idx => {
-            const btn = document.getElementById(`lvlBtn${idx}`);
-            if (btn) {
-                btn.disabled = false;
-                btn.classList.replace("btn-ghost", "btn-like");
-                btn.innerHTML = btn.innerHTML.replace(" 🔒", " ✅");
-            }
+    /* ---------- SECRET VAULT ---------- */
+
+    function openSecretVault() {
+        const bank = document.getElementById("emojiBank");
+        const slots = document.querySelectorAll(".slot");
+
+        bank.innerHTML = "";
+        playerSelection = [null, null, null];
+        secretWrongAttempts = 0;
+        document.getElementById("secretErrorCounter").textContent = "Грешни обиди: 0";
+
+        slots.forEach((slot, i) => {
+            slot.textContent = "";
+            slot.onclick = () => {
+                const emoji = playerSelection[i];
+                if (!emoji) return;
+
+                document.querySelectorAll(".draggable-emoji").forEach(e => {
+                    if (e.textContent === emoji) e.classList.remove("used");
+                });
+
+                playerSelection[i] = null;
+                slot.textContent = "";
+            };
         });
-        
-        // Ако е отклучен сефот (индекс 3)
-        if (unlockedLevels.includes(3)) {
-            const btnSecret = document.getElementById("btnSecretMenu");
-            btnSecret.disabled = false;
-            btnSecret.classList.replace("btn-ghost", "btn-report");
-            
-            // Додај пулсирачка анимација преку inline стил или класа
-            btnSecret.style.animation = "pulse 2s infinite"; 
-            
-            btnSecret.onclick = openSecretVault;
-        }
+
+        [...emojiPool].sort(() => Math.random() - 0.5).forEach(emoji => {
+            const el = document.createElement("div");
+            el.className = "draggable-emoji";
+            el.textContent = emoji;
+
+            el.onclick = () => {
+                const idx = playerSelection.indexOf(null);
+                if (idx !== -1 && !el.classList.contains("used")) {
+                    playerSelection[idx] = emoji;
+                    slots[idx].textContent = emoji;
+                    el.classList.add("used");
+                }
+            };
+
+            bank.appendChild(el);
+        });
+
+        overlays.secret.classList.remove("hidden");
     }
 
-    // --- EVENT LISTENERS ---
-    document.getElementById("btnIntroOk").onclick = () => {
-        document.getElementById("introOverlay").classList.add("hidden");
-        levelMenuOverlay.classList.remove("hidden");
-    };
+    document.getElementById("btnCheckSecret").onclick = () => {
+        const ok = playerSelection.every((v, i) => v === secretCombo[i]);
+        const area = document.querySelector(".emoji-slots");
+        const counter = document.getElementById("secretErrorCounter");
 
-    btnBack.onclick = () => {
-        if(confirm("Дали сакаш да се вратиш во менито? Прогресот за ова ниво ќе се изгуби.")) {
-            levelMenuOverlay.classList.remove("hidden");
+        if (ok) {
+            overlays.secret.classList.add("hidden");
+            overlays.victory.classList.remove("hidden");
+            if (window.confetti) confetti({ particleCount: 150, spread: 80 });
+        } else {
+            secretWrongAttempts++;
+            counter.textContent = `Грешни обиди: ${secretWrongAttempts}`;
+            area.classList.add("shake");
+            counter.classList.add("shake");
+            setTimeout(() => {
+                area.classList.remove("shake");
+                counter.classList.remove("shake");
+            }, 500);
         }
     };
+
+    /* ---------- BUTTONS ---------- */
 
     btnSend.onclick = () => handleAction("send");
 
     btnReport.onclick = () => {
         const list = document.getElementById("reasonList");
         list.innerHTML = "";
+
         DATA.reportReasons.forEach(r => {
             const b = document.createElement("button");
             b.className = "reason";
             b.textContent = r.label;
             b.onclick = () => {
-                reportOverlay.classList.add("hidden");
+                overlays.report.classList.add("hidden");
                 handleAction("report", r.id);
             };
             list.appendChild(b);
         });
-        reportOverlay.classList.remove("hidden");
+
+        overlays.report.classList.remove("hidden");
     };
 
-    document.getElementById("btnMarkoOk").onclick = () => markoOverlay.classList.add("hidden");
-    document.getElementById("btnCancelReport").onclick = () => reportOverlay.classList.add("hidden");
-
-    // Глобална функција за ресетирање (повикана од HTML)
-    window.resetGame = () => {
-        if(confirm("Дали си сигурен дека сакаш да го избришеш целиот прогрес?")) {
-            localStorage.removeItem("chatGuardProgress");
-            location.reload();
-        }
+    btnBack.onclick = e => {
+        e.preventDefault();
+        overlays.exit.classList.remove("hidden");
     };
+
+    document.getElementById("btnConfirmExit").onclick = () => {
+        overlays.exit.classList.add("hidden");
+        overlays.menu.classList.remove("hidden");
+    };
+
+    document.getElementById("btnCancelExit").onclick = () =>
+        overlays.exit.classList.add("hidden");
+
+    document.getElementById("btnCancelSecret").onclick = () =>
+        overlays.secret.classList.add("hidden");
+
+    document.getElementById("btnMarkoOk").onclick = () =>
+        overlays.marko.classList.add("hidden");
+
+    document.getElementById("btnCancelReport").onclick = () =>
+        overlays.report.classList.add("hidden");
+
+    document.getElementById("btnIntroOk").onclick = () => {
+        overlays.intro.classList.add("hidden");
+        overlays.menu.classList.remove("hidden");
+    };
+
+    updateMenuUI();
 });
-
