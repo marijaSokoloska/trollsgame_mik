@@ -57,7 +57,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
             btn.textContent = `@${lvl.username}`;
 
-            if (i <= unlockedLevel) {
+            // Проверка за обичните нивоа (0, 1, 2)
+            if (i <= unlockedLevel && i < DATA.levels.length) {
                 btn.disabled = false;
                 btn.classList.remove("btn-ghost");
                 btn.classList.add("btn-like");
@@ -72,18 +73,25 @@ document.addEventListener("DOMContentLoaded", () => {
         });
 
         const btnSecret = document.getElementById("btnSecretMenu");
-        if (unlockedLevel >= DATA.levels.length - 1) {
+        
+        /* ПОПРАВКА: Сефот се отклучува само ако unlockedLevel е 3.
+           Тоа се случува откако ќе го поминеш нивото 2 (Третото ниво) 
+           и успешно ќе го решиш емоџи квизот.
+        */
+        if (unlockedLevel >= DATA.levels.length) { 
             btnSecret.disabled = false;
             btnSecret.classList.remove("btn-ghost");
-            btnSecret.classList.add("btn-report");
+            btnSecret.classList.add("btn-report"); // Станува црвено и впечатливо
+            btnSecret.innerHTML = "🔓 Отвори го сефот";
             btnSecret.onclick = openSecretVault;
         } else {
             btnSecret.disabled = true;
             btnSecret.classList.remove("btn-report");
             btnSecret.classList.add("btn-ghost");
+            btnSecret.innerHTML = "🔐 Сефот е заклучен";
             btnSecret.onclick = null;
         }
-    }
+    }	
 
     /* ---------- GAME FLOW ---------- */
 
@@ -264,6 +272,11 @@ document.addEventListener("DOMContentLoaded", () => {
             const b = document.createElement("button");
             b.className = "reason";
             b.textContent = r.label;
+            
+            // ДОДАЈ ЈА ОВАА ЛИНИЈА ЗА ПОДОБРА ВИДЛИВОСТ:
+            b.style.color = "white"; 
+            b.style.fontWeight = "bold";
+
             b.onclick = () => {
                 overlays.report.classList.add("hidden");
                 handleAction("report", r.id);
