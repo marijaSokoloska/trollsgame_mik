@@ -4,13 +4,11 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>ChatGuard Prototype</title>
-
   <link rel="stylesheet" href="styles.css" />
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 </head>
 <body>
 
-<!-- INTRO -->
 <div id="introOverlay" class="overlay">
   <div class="popup">
     <div class="popup-top">
@@ -25,16 +23,15 @@
   </div>
 </div>
 
-<!-- MENU -->
 <div id="levelMenuOverlay" class="overlay hidden">
   <div class="modal">
     <div class="modal-title">Избери разговор</div>
     <p class="modal-subtitle">Секој разговор е со различен профил</p>
 
     <div class="level-list">
-      <button id="lvlBtn0" class="btn btn-ghost">@трол_123 🔒</button>
-      <button id="lvlBtn1" class="btn btn-ghost">@анонимен_хејтер 🔒</button>
-      <button id="lvlBtn2" class="btn btn-ghost">@dark_chat 🔒</button>
+      <button id="lvlBtn0" class="btn btn-ghost" disabled>Ниво 1 🔒</button>
+      <button id="lvlBtn1" class="btn btn-ghost" disabled>Ниво 2 🔒</button>
+      <button id="lvlBtn2" class="btn btn-ghost" disabled>Ниво 3 🔒</button>
     </div>
 
     <hr class="divider">
@@ -45,32 +42,23 @@
   </div>
 </div>
 
-<!-- APP -->
 <div class="app">
   <header class="topbar">
     <div class="top-left">
-      <button id="btnBack" class="icon-btn">
-        ←
-      </button>
-
-      <img class="avatar" src="assets/troll.jpg" alt="Трол">
-
+      <button id="btnBack" class="icon-btn">←</button>
+      <img id="trollAvatar" class="avatar" src="assets/troll.jpg" alt="Трол">
       <div>
         <div class="name">@непознат_профил</div>
         <div id="levelInfo" class="subtitle">Разговор</div>
       </div>
     </div>
-
-    <div id="scoreInfo" class="pill">
-      Точно: 0 | Грешки: 0
-    </div>
+    <div id="scoreInfo" class="pill">Точно: 0 | Грешки: 0</div>
   </header>
 
   <main id="chat" class="chat"></main>
 
   <footer class="actionbar">
-    <input id="replyInput" class="reply-input" type="text" />
-
+    <input id="replyInput" class="reply-input" type="text" readonly placeholder="Чекање порака..." />
     <div class="actions">
       <button id="btnSend" class="btn btn-like">📨 Одговори</button>
       <button id="btnReport" class="btn btn-report">🚩 Пријави</button>
@@ -78,7 +66,6 @@
   </footer>
 </div>
 
-<!-- REPORT -->
 <div id="reportOverlay" class="overlay hidden">
   <div class="modal">
     <div class="modal-title">Зошто го пријавуваш?</div>
@@ -87,7 +74,6 @@
   </div>
 </div>
 
-<!-- MARKO -->
 <div id="markoOverlay" class="overlay hidden">
   <div class="popup">
     <div class="popup-top">
@@ -99,7 +85,6 @@
   </div>
 </div>
 
-<!-- CODE QUIZ -->
 <div id="codeOverlay" class="overlay hidden">
   <div class="popup">
     <div class="popup-title">🔑 Кој беше точниот клуч?</div>
@@ -107,29 +92,21 @@
   </div>
 </div>
 
-<!-- SECRET VAULT -->
 <div id="secretCodeOverlay" class="overlay hidden">
   <div class="modal">
     <div class="modal-title">🔓 Таен сеф</div>
-
     <div class="emoji-slots">
       <div class="slot"></div>
       <div class="slot"></div>
       <div class="slot"></div>
     </div>
-
     <div id="emojiBank" class="emoji-bank"></div>
-
-    <div id="secretErrorCounter" class="error-counter">
-      Грешни обиди: 0
-    </div>
-
+    <div id="secretErrorCounter" class="error-counter">Грешни обиди: 0</div>
     <button id="btnCheckSecret" class="btn btn-like">Провери</button>
     <button id="btnCancelSecret" class="btn btn-ghost">Откажи</button>
   </div>
 </div>
 
-<!-- EXIT -->
 <div id="confirmExitOverlay" class="overlay hidden">
   <div class="modal">
     <div class="popup-title">Сигурно излегуваш?</div>
@@ -139,14 +116,11 @@
   </div>
 </div>
 
-<!-- VICTORY -->
 <div id="victoryOverlay" class="overlay hidden">
   <div class="popup">
     <div style="font-size:70px;">🏆</div>
     <div class="popup-title">Браво!</div>
-    <div class="popup-text">
-      Успешно го заштити Марко 🎉
-    </div>
+    <div class="popup-text">Успешно го заштити Марко 🎉</div>
     <button class="btn btn-like" onclick="location.reload()">Играј повторно</button>
   </div>
 </div>
