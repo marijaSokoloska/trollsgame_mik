@@ -160,6 +160,16 @@ body {
   line-height: 1.4;
 }
 
+.inline-img{
+  width: 100%;
+  max-width: 260px;
+  display: block;
+  margin-top: 10px;
+  border-radius: 14px;
+  border: 1px solid rgba(255,255,255,0.12);
+}
+
+
 .msg.troll { justify-content: flex-start; }
 .msg.troll .bubble { background: var(--bubble-troll); border-bottom-left-radius: 4px; }
 
